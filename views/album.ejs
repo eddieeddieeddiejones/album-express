@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>我的相册 - 钢铁侠</title>
+  <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+
+<body>
+  <div class="container-fluid">
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">我的相册</a>
+        </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="/">首页 <span class="sr-only">(current)</span></a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">照片上传</a></li>
+          </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+      </div>
+      <!-- /.container-fluid -->
+    </nav>
+  </div>
+<div class="container">
+  <div class="row">
+      <% imgPaths.forEach(function(imgPath){ %>
+          <div class="col-xs-6 col-md-3">
+            <div class="thumbnail">
+              <img src="uploads/<%=imgPath%>" alt="">
+            </div>
+          </div>
+      <% }) %>
+      <% if(imgPaths.length === 0){ %>
+          <p>该相册没有任何内容</p>
+      <% } %>
+  </div>
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <!-- 
+          有文件的表单提交：
+            1. method="post" 必须
+            2. 将表单的 enctype="multipart/form-data"
+            3. file类型的input也必须有 name 属性
+         -->
+        <form action="/album?albumName=<%= albumName %>" method="post" enctype="multipart/form-data">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">照片上传</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="recipient-name" class="control-label">请选择文件:</label>
+              <input type="file" name="image" class="form-control" multiple="multiple">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="submit" class="btn btn-success">点击上传</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src="node_modules/jquery/dist/jquery.js"></script>
+  <script src="node_modules/bootstrap/dist/js/bootstrap.js"></script>
+  <!-- <script src="node_modules/art-template/dist/template.js"></script> -->
+</body>
+
+</html>

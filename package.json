@@ -1,0 +1,20 @@
+{
+  "name": "album",
+  "version": "1.0.0",
+  "description": "一个简单的相册，支持上传和预览",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "art-template": "^3.0.3",
+    "bootstrap": "^3.3.7",
+    "ejs": "^2.5.2",
+    "express": "^4.14.0",
+    "formidable": "^1.0.17",
+    "jquery": "^3.1.1",
+    "underscore": "^1.8.3"
+  }
+}
