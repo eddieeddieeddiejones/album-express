@@ -1,4 +1,4 @@
-# album
+# album-express
 express搭建的简单相册，功能有查看相册内图片，新建相册文件夹，上传图片
 
 ### 开始
