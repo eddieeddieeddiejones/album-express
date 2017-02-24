@@ -29,35 +29,37 @@ exports.showIndex = (req, res) => {
     })
 }
 
+
 //拿到查询字符串对象，遍历文件夹，render方法渲染album
 /**
  * GET /album?albumName=xxx
  * <a href="/album?albumName=<%= albumName %>" class="thumbnail">
  */
+// Try map
+// var numbers = [1, 5, 10, 15];
+// var roots = numbers.map(function(x){
+//    return  x * 2;
+// })
+// console.log(roots)
 
-exports.showAlbum = (req, res) => {
+exports.showAlbum = (req,res) => {
     const albumName = req.query.albumName
-    const albumPath = path.join(config.uploadDir, albumName)
+    const albumPath = path.join(config.uploadDir,albumName)
 
-    fs.readdir(albumPath, (err, files) => {
-        if (err) {
+
+    fs.readdir(albumPath,(err,files) => {
+        if(err) {
             throw err
         }
-        // console.log(files)
-        files = files.map(fileName => fileName = `${albumName}/${fileName}`)
-            // 为什么这么写是错的？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
-            /*files = files.map(file=>{ 
-                file = `${albumName}/${file}`
-            })*/
-            // console.log(files)
-            //渲染页面，并且将渲染好的html字符串发送给客户端
-        res.render('album', {
+        files = files.map(fileName => {
+            return `${albumName}/${fileName}`
+        })
+        res.render('album',{
             imgPaths: files,
             albumName: albumName
         })
     })
 }
-
 
 //读取文件夹内容，添加到数组中，写响应头，返回json字符串
 /**
@@ -90,46 +92,42 @@ exports.getAlbums = (req, res) => {
     })
 }
 
-/**
- * GET /add?albumName=xxx
- */
-//拿到请求字符串，为空，响应一句话，遍历文件夹，如果有了，响应一句话，fs.mkdir新建文件夹，成功后跳转到首页
+// 新建相册
+// TODO
+// get /add?albumName=xxx
+// 直接在地址栏里输入
+// http://localhost:3000/add?albumName=hahaa
+// 也可以新建相册，这和form表单中直接点击新建相册的效果是一致的
 exports.doAdd = (req, res) => {
     const albumName = req.query.albumName
-    if (albumName.trim() === '') {
+    if(albumName.trim() === ''){
         return res.end('相册名称不能为空')
     }
     let albums = []
-        // const albumPath = path.join(config.uploadDir,albumName)
-    fs.readdir(config.uploadDir, (err, files) => {
-        if (err) {
-            throw err
-        }
-        files.forEach((item) => {
-            const albumPath = path.join(config.uploadDir, item)
-            console.log(albumPath)
-            console.log(fs.statSync(albumPath))  //一个对象
-            console.log(fs.statSync(albumPath).isDirectory())//true
-            if (fs.statSync(albumPath).isDirectory()) {
-                albums.push(albumPath)
-            }
-        })
-    })
-    const dest = path.join(config.uploadDir,albumName)
-    console.log(albums)
-    // console.log(albums.find(album => { album === albumName }))
-    //添加重名文件夹会出错，办法没有找到？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？
-    if (albums.some(album => { return album === dest })) {
-        return res.end('该相册名称已存在')
-    }
-    fs.mkdir(path.join(config.uploadDir, albumName), err => {
+    fs.readdir(config.uploadDir,(err,files) => {
         if(err){
             throw err
         }
-        //重新定位到首页
-        res.redirect('/')
+        files.forEach((item) => {
+            const albumPath = path.join(config.uploadDir,item)
+            if(fs.statSync(albumPath).isDirectory()){
+                albums.push(albumPath)
+            }
+        })
+
+        const dest = path.join(config.uploadDir,albumName)
+        if(albums.some(album => {return album === dest})){
+            return res.end('该相册名称已存在')
+        }
+        fs.mkdir(path.join(config.uploadDir,albumName),err => {
+            if(err){
+                throw err
+            }
+            res.redirect('/')
+        })
     })
 }
+
 
 /**
  * 404
@@ -166,21 +164,32 @@ exports.doLogin = (req, res) => {
  * POST /album?albumName=xxx
  */
 //解析查询字符串，formidable
-exports.upload = (req,res)=>{
-    const albumName = req.query.albumName
 
+
+// encodeURI 就是把请求地址转换成浏览器可以认识的字符串
+// // http://www.w3school.com.cn
+// console.log(encodeURI("http://www.w3school.com.cn"))
+// // http://www.w3school.com.cn/My%20first/
+// console.log(encodeURI("http://www.w3school.com.cn/My first/"))
+// // ,/?:@&=+$#
+// console.log(encodeURI(",/?:@&=+$#"))
+// %E5%93%88%E5%93%88%20eng%20%E5%93%BC%E5%93%BC
+// console.log(encodeURI("哈哈 eng 哼哼"))
+exports.upload = (req, res) => {
+    const albumName = req.query.albumName
     const form = new formidable.IncomingForm()
-    // console.log(path.join(config.uploadDir,albumName))
     form.uploadDir = path.join(config.uploadDir,albumName)
     form.keepExtensions = true
-    form.maxFieldsSize = 5 * 1024 * 1024
+    form.maxFieldsSize = 5*1024*1024
 
-    form.parse(req, (err, fields, files) => {
-      if(err){
-        throw err
-      }
-      res.redirect(`/album?albumName=${encodeURI(albumName)}`)
-    });
+    console.log(1)
+
+    form.parse(req,(err,fields,files) =>{
+        if(err){
+            throw err
+        }
+        res.redirect(`/album?albumName=${encodeURI(albumName)}`)
+    })
 }
 
 

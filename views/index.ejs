@@ -29,11 +29,14 @@
         <ul class="nav navbar-nav">
           <li class="active"><a href="/">首页 <span class="sr-only">(current)</span></a></li>
         </ul>
+        <!-- <!-- TODO 新建相册链接 -->
         <ul class="nav navbar-nav navbar-right">
           <li>
-            <a href="" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">新建相册</a>
+            <a href="#"  data-toggle="modal" data-target="#myModal">
+              新建相册
+            </a>
           </li>
-        </ul>
+        </ul>        
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>
@@ -44,7 +47,6 @@
   <div class="row">
       <% albumNames.forEach(function(albumName){%>
           <div class="col-xs-6 col-md-3">
-            <!-- 这个地方如何理解？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？ -->
             <a href="/album?albumName=<%= albumName %>" class="thumbnail">
               <img src="/public/img/icon.png" alt="">
             </a>
@@ -56,32 +58,33 @@
   </div>
 </div>
 
-
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+<!-- 新建相册弹层 -->
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <form action="/add" method="get">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="exampleModalLabel">新建相册</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">新建相册</h4>
         </div>
         <div class="modal-body">
-
-          <div class="form-group">
-            <label for="recipient-name" class="control-label">相册名称:</label>
-            <input type="text" class="form-control" name="albumName" placeholder="请输入相册名称">
+          <label for="basic-url">相册名称：</label>
+          <div class="input-group">
+            <!-- <span class="input-group-addon" id="basic-addon3"></span> -->
+            <input name="albumName" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
           </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-          <button type="submit" class="btn btn-success">点击添加</button>
-        </div>
+          <button type="submit" class="btn btn-primary">点击添加</button>
+        </div>        
       </form>
-
     </div>
   </div>
 </div>
+
+
 
 <script src="/node_modules/jquery/dist/jquery.min.js"></script>
 <script src="../node_modules/bootstrap/dist/js/bootstrap.min.js"></script>

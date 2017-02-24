@@ -4,8 +4,7 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
 ### 开始
 - 项目文件夹`album-express`下命令行`npm install` 安装依赖项
 - 项目文件夹`album-express`下命令行运行node app.js
-- 浏览器打开http://127.0.0.1:3000/  
-    查看效果
+- 浏览器打开http://127.0.0.1:3000/  查看效果
 
 ### 项目用到的技术
 - bootstrap搭建前端页面
@@ -15,12 +14,12 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
 - 处理图片上传提交用了formidable中间件
 
 ### 效果
-- 新建相册  
-![新建相册](http://oh2ncn0ir.bkt.clouddn.com/mkdir.gif)
+- 新建相册    
+    ![新建相册](http://oh2ncn0ir.bkt.clouddn.com/mkdir.gif)
 - 查看相册内容  
-![查看相册内容](http://oh2ncn0ir.bkt.clouddn.com/seecontent.gif)
+    ![查看相册内容](http://oh2ncn0ir.bkt.clouddn.com/seecontent.gif)
 - 上传图片  
-!![查看相册内容](http://oh2ncn0ir.bkt.clouddn.com/uploadimg.gif)
+    ![查看相册内容](http://oh2ncn0ir.bkt.clouddn.com/uploadimg.gif)
 
 
 
@@ -47,8 +46,8 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
                             albums.push(item)
                         }
                     })
-                    console.log(albums)
-                        //渲染页面
+                    // console.log(albums)
+                    //渲染页面
                     res.render('index', {
                         albumNames: albums
                     })
@@ -84,50 +83,49 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
         /**
          * GET /add?albumName=xxx
          */
-        /**
-         * GET /add?albumName=xxx
-         */
-        //拿到请求字符串，为空，响应一句话，遍历文件夹，如果有了，响应一句话，fs.mkdir新建文件夹，成功后跳转到首页
+        //拿到请求字符串，为空，响应'相册名称不能为空'。遍历文件夹，如果有了，响应'该相册名称已存在'，否则，fs.mkdir新建文件夹，成功后跳转到首页
+        <!-- handler.js -->
         exports.doAdd = (req, res) => {
             const albumName = req.query.albumName
             if (albumName.trim() === '') {
                 return res.end('相册名称不能为空')
             }
             let albums = []
-            // const albumPath = path.join(config.uploadDir,albumName)
+                // const albumPath = path.join(config.uploadDir,albumName)
             fs.readdir(config.uploadDir, (err, files) => {
                 if (err) {
                     throw err
                 }
+                // console.log(files) // ['a',...]
                 files.forEach((item) => {
                     const albumPath = path.join(config.uploadDir, item)
-                    console.log(albumPath)
-                    console.log(fs.statSync(albumPath))  //一个对象
-                    console.log(fs.statSync(albumPath).isDirectory())//true
+                    // console.log(albumPath)
+                    // console.log(fs.statSync(albumPath))  //一个对象
+                    // console.log(fs.statSync(albumPath).isDirectory())//true
                     if (fs.statSync(albumPath).isDirectory()) {
-                        //这里代码有bug，没有解决    
-                        albums.push(albumPath)
+                        albums.push(albumPath) 
                     }
                 })
-            })
-            const dest = path.join(config.uploadDir,albumName)
-            console.log(albums)
-            // console.log(albums.find(album => { album === albumName }))
-            //添加重名文件夹会出错，办法没有找到？？？？？？？？？？？？？？？
-            if (albums.some(album => { return album === dest })) {
-                return res.end('该相册名称已存在')
-            }
-            fs.mkdir(path.join(config.uploadDir, albumName), err => {
-                if(err){
-                    throw err
+
+                const dest = path.join(config.uploadDir,albumName)
+                // console.log([12,2,3].some(a => {return a === 3})) // true
+                // fs.readdir 是异步的
+                if (albums.some(album => { return album === dest })) {
+                    return res.end('该相册名称已存在')
                 }
-                //重新定位到首页
-                res.redirect('/')
+                fs.mkdir(path.join(config.uploadDir, albumName), err => {
+                    if(err){
+                        throw err
+                    }
+                    //重新定位到首页
+                    res.redirect('/')
+                })
             })
         }
         
 
-        <!-- album.ejs -->
+        <!-- index.ejs -->
+        <!-- action: The URI of a program that processes the form information.  -->
         <form action="/add" method="get">
               <input type="text" class="form-control" name="albumName" placeholder="请输入相册名称">
             <button type="submit" class="btn btn-success">点击添加</button>
@@ -136,7 +134,7 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
 #### 相册页面图片展示
     1. req.query取得查询字符串的值
     2. path.join转成绝对路径
-    3. fs.readdir()读取文件夹内容，得到文件夹名称是一个数组，
+    3. fs.readdir()读取文件夹内容，得到由文件夹名称组成的一个数组
     4. res.render()
     ```js
         /**
@@ -196,6 +194,7 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
             });
         }
 
+        <!-- album.ejs -->
         <!-- 
           有文件的表单提交：
             1. method="post" 必须
@@ -236,7 +235,7 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
 
 #### 问题
 - node 什么情况下要写响应头res.writeHead()?  
-    因为默认情况下，使用.writeHead方法写入响应头后，允许使用.write方法写入任意长度的响应体数据，并使用.end方法结束一个响应。
+    默认情况下，使用.writeHead方法写入响应头后，允许使用.write方法写入任意长度的响应体数据，并使用.end方法结束一个响应。
 
 
     
