@@ -198,5 +198,10 @@ exports.upload = (req, res) => {
     })
 }
 
+exports.haha = (req,res)=>{
+    const data = {hey: 1}
+    res.json(data)
+}
+
 
 
