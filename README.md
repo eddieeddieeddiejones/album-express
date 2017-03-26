@@ -22,7 +22,24 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
 - 上传图片  
     ![查看相册内容](./screenshoot/uploadimg.gif)
 
-
+#### 流程解析
+* app.js文件，node入口文件，
+    实例express，app.use,express.static配置静态资源
+    app.set配置模板引擎，后端模板引擎用的是ejs
+    app.listen 设置服务器地址端口，开启服务器
+* router.js文件，设置路由
+    express.Router()获取路由对象
+    router.get设置路由
+* handlers.js文件，编写具体的路由处理函数
+    fs.readdir读取文件夹内容
+    res.render渲染模板文件，并且将渲染好的html字符串发送给浏览器
+    req.query得到查询字符串的值
+    JSON.stringify(obj)将json对象转换成json字符串
+    res.writeHead()写响应头
+    res.end()
+    res.redirect()网页重定位
+* config.js文件，配置文件
+    配置host、port、以及允许访问的静态文件夹地址（用绝对路径）
 
 
 ### 代码解析
@@ -87,7 +104,9 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
      * handler.js文件中相应代码
      * GET /add?albumName=xxx
      */
-    //拿到请求字符串，为空，响应'相册名称不能为空'。遍历服务端本地文件夹，如果要新建文件夹名称，服务端已经有了相同名字的文件夹，响应'该相册名称已存在'，否则，fs.mkdir新建文件夹，成功后跳转到首页
+    //拿到请求字符串，为空，响应'相册名称不能为空'。遍历服务端本地文件夹，
+    //如果要新建文件夹名称，服务端已经有了相同名字的文件夹，
+    //响应'该相册名称已存在'，否则，fs.mkdir新建文件夹，成功后跳转到首页
     <!-- handler.js -->
     exports.doAdd = (req, res) => {
         const albumName = req.query.albumName
@@ -148,42 +167,42 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
     </form>
 ```
 #### 相册页面图片展示
-    1. req.query取得查询字符串的值
-    2. path.join转成绝对路径
-    3. fs.readdir()读取文件夹内容，得到由文件夹名称组成的一个数组
-    4. res.render()渲染模板文件
-    ```js
-        /**
-         * GET /album?albumName=xxx
-         */
-        exports.showAlbum = (req, res) => {
-            const albumName = req.query.albumName
-            const albumPath = path.join(config.uploadDir, albumName)
+1. req.query取得查询字符串的值
+2. path.join转成绝对路径
+3. fs.readdir()读取文件夹内容，得到由文件夹名称组成的一个数组
+4. res.render()渲染模板文件
+```js
+    /**
+     + GET /album?albumName=xxx
+     */
+    exports.showAlbum = (req, res) => {
+        const albumName = req.query.albumName
+        const albumPath = path.join(config.uploadDir, albumName)
 
-            fs.readdir(albumPath, (err, files) => {
-                if (err) {
-                    throw err
-                }
-                // console.log(files)
-                // 字符串拼接用到了ES6语法
-                // 箭头函数写在一行不加`{}`,会默认返回表达式的结果，不用写`return`了
-                files = files.map(fileName => fileName = `${albumName}/${fileName}`)
-                // 上面这句代码也可以这么写
-                // files = files.map(file=>{ 
-                //    return file = `${albumName}/${file}`
-                // })
-                // console.log(files)
-                //渲染页面，并且将渲染好的html字符串发送给客户端
-                res.render('album', {
-                    imgPaths: files,
-                    albumName: albumName
-                })
+        fs.readdir(albumPath, (err, files) => {
+            if (err) {
+                throw err
+            }
+            // console.log(files)
+            // 字符串拼接用到了ES6语法
+            // 箭头函数写在一行不加`{}`,会默认返回表达式的结果，不用写`return`了
+            files = files.map(fileName => fileName = `${albumName}/${fileName}`)
+            // 上面这句代码也可以这么写
+            // files = files.map(file=>{ 
+            //    return file = `${albumName}/${file}`
+            // })
+            // console.log(files)
+            //渲染页面，并且将渲染好的html字符串发送给客户端
+            res.render('album', {
+                imgPaths: files,
+                albumName: albumName
             })
-        }
+        })
+    }
 
-        <!-- index.ejs文件相关代码 -->
-        <a href="/album?albumName=<%= albumName %>" class="thumbnail">
-    ```
+    <!-- index.ejs文件相关代码 -->
+    <a href="/album?albumName=<%= albumName %>" class="thumbnail">
+```
     
 #### 上传图片到指定相册
 1. 解析取得查询字符串，req.query
@@ -237,24 +256,7 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
 - 处理复杂表单提交用formidable中间件
 
 
-#### 流程解析
-- app.js文件，node入口文件，
-    实例express，app.use,express.static配置静态资源
-    app.set配置模板引擎，后端模板引擎用的是ejs
-    app.listen 设置服务器地址端口，开启服务器
-- router.js文件，设置路由
-    express.Router()获取路由对象
-    router.get设置路由
-- handlers.js文件，编写具体的路由处理函数
-    fs.readdir读取文件夹内容
-    res.render渲染模板文件，并且将渲染好的html字符串发送给浏览器
-    req.query得到查询字符串的值
-    JSON.stringify(obj)将json对象转换成json字符串
-    res.writeHead()写响应头
-    res.end()
-    res.redirect()网页重定位
-- config.js文件，配置文件
-    配置host、port、以及允许访问的静态文件夹地址（用绝对路径）
+
 
 #### 问题
 - node 什么情况下要写响应头`res.writeHead()`?  
@@ -295,6 +297,8 @@ exports.hehe = (req,res)=>{
     res.json(data)
 }
 ```
+
+#### MIT 代码是别人的，我跟着写了遍 
 
 
    
