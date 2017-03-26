@@ -182,12 +182,18 @@ exports.upload = (req, res) => {
     form.keepExtensions = true
     form.maxFieldsSize = 5*1024*1024
 
-    console.log(1)
+    // console.log(1)
 
     form.parse(req,(err,fields,files) =>{
         if(err){
             throw err
         }
+        // 浏览器在和服务器进行通信的时候是不能在url中包含汉字的，
+        // 可能我们在浏览器地址栏能看见汉字，但是浏览器在发送请求url的时候，已经默认将url进行转码了。
+        // 乔
+        // console.log(albumName)
+        // %E4%B9%94
+        // console.log(encodeURI(albumName))
         res.redirect(`/album?albumName=${encodeURI(albumName)}`)
     })
 }
