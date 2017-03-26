@@ -14,12 +14,13 @@ express搭建的简单相册，功能有查看相册内图片，新建相册文�
 - 处理图片上传提交用了formidable中间件
 
 ### 效果
+
 - 新建相册    
-    ![新建相册](http://oh2ncn0ir.bkt.clouddn.com/mkdir.gif)
+    ![新建相册](./screenshoot/mkdir.gif)
 - 查看相册内容  
-    ![查看相册内容](http://oh2ncn0ir.bkt.clouddn.com/seecontent.gif)
+    ![查看相册内容](./screenshoot/seecontent.gif)
 - 上传图片  
-    ![查看相册内容](http://oh2ncn0ir.bkt.clouddn.com/uploadimg.gif)
+    ![查看相册内容](./screenshoot/uploadimg.gif)
 
 
 
